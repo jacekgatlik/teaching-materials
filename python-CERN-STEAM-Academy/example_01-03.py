@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 def residual_norm(nx, L=10.0):
     # Spatial grid
     x = np.linspace(-L, L, nx)
@@ -20,7 +19,6 @@ def residual_norm(nx, L=10.0):
     norm = np.sqrt(np.mean(res**2))
 
     return dx, norm
-
 
 # Different grid resolutions
 n_values = [51, 101, 201, 401, 801, 1601]
