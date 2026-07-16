@@ -5,18 +5,15 @@ from pstats import SortKey
 import numpy as np
 
 def make_problem(n):
-    """Create initial data for a simple time-stepping example."""
     x = np.linspace(-10.0, 10.0, n)
     dx = x[1] - x[0]
     u = np.tanh(x)
     return u, dx
 
 def local_force_scalar(value):
-    """Small scalar function: cheap once, expensive if called many times."""
     return value*(value**2 - 1.0)
 
 def residual_many_calls(u, dx):
-    """Residual with a Python loop and many scalar function calls."""
     r = np.zeros_like(u)
 
     for i in range(1, u.size - 1):
@@ -26,7 +23,6 @@ def residual_many_calls(u, dx):
     return r
 
 def residual_vectorized(u, dx):
-    """The same residual written as an array operation."""
     r = np.zeros_like(u)
 
     r[1:-1] = (
@@ -37,13 +33,11 @@ def residual_vectorized(u, dx):
     return r
 
 def step(u, dx, dt, residual_function):
-    """One explicit step. The residual function is passed as an argument."""
     return u - dt*residual_function(u, dx)
 
 def run_simulation(n, n_steps, residual_function):
-    """A small simulation with a visible call structure."""
     u, dx = make_problem(n)
-    dt = 1e-4
+    dt = 1e-10
 
     for _ in range(n_steps):
         u = step(u, dx, dt, residual_function)
@@ -51,7 +45,6 @@ def run_simulation(n, n_steps, residual_function):
     return u
 
 def profile_function(label, function, n_lines=12):
-    """Profile a function call and print the most important lines."""
     profiler = cProfile.Profile()
 
     profiler.enable()

@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 
 @dataclass(frozen=True)
 class TrainingConfig:
-    """Configuration of the training loop."""
     learning_rate: float = 0.05
     batch_size: int = 64
     epochs: int = 80
@@ -21,7 +20,6 @@ class TrainingConfig:
 
 @dataclass(frozen=True)
 class Standardizer:
-    """Store preprocessing parameters fitted on the training data."""
     mean: np.ndarray
     scale: np.ndarray
 
@@ -43,18 +41,12 @@ class Standardizer:
 
 @dataclass
 class FitResult:
-    """Structured output of the training procedure."""
     theta: np.ndarray
     bias: float
     train_loss: list
     val_loss: list
 
 def make_synthetic_data(n_samples, rng):
-    """
-    Create a synthetic regression dataset.
-
-    The true model is linear, so we know what the algorithm should recover.
-    """
     X = rng.normal(size=(n_samples, 3))
 
     theta_true = np.array([1.5, -2.0, 0.7])
@@ -67,7 +59,6 @@ def make_synthetic_data(n_samples, rng):
     return X, y, theta_true, bias_true
 
 def train_val_split(X, y, *, train_fraction, rng):
-    """Split data without using hidden global randomness."""
     if X.ndim != 2:
         raise ValueError("X must have shape (n_samples, n_features)")
 
@@ -88,7 +79,6 @@ def train_val_split(X, y, *, train_fraction, rng):
     return X[train_idx], y[train_idx], X[val_idx], y[val_idx]
 
 def batches(X, y, batch_size, rng):
-    """Yield mini-batches lazily."""
     indices = rng.permutation(len(X))
 
     for start in range(0, len(X), batch_size):
@@ -97,20 +87,13 @@ def batches(X, y, batch_size, rng):
         yield X[batch_idx], y[batch_idx]
 
 def predict(X, theta, bias):
-    """Linear model."""
     return X @ theta + bias
 
 def mse_loss(y_pred, y):
-    """Mean squared error."""
     residual = y_pred - y
     return float(np.mean(residual**2))
 
 def train_linear_model(X_train, y_train, X_val, y_val, *, config, rng):
-    """
-    Train a linear model using mini-batch gradient descent.
-
-    All data flow is explicit: data, configuration, and RNG enter as arguments.
-    """
     n_features = X_train.shape[1]
 
     theta = np.zeros(n_features)

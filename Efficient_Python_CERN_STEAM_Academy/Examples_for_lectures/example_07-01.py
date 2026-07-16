@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from time import perf_counter
 
 def make_signal(n, seed=123):
-    """Construct a noisy damped oscillatory signal."""
     rng = np.random.default_rng(seed)
 
     t = np.linspace(0.0, 200.0, n, endpoint=False)
@@ -14,7 +13,6 @@ def make_signal(n, seed=123):
     return x - x.mean()
 
 def autocorr_direct(x, max_lag):
-    """Direct autocorrelation for selected lags: O(n * max_lag)."""
     c = np.empty(max_lag)
 
     for lag in range(max_lag):
@@ -23,7 +21,6 @@ def autocorr_direct(x, max_lag):
     return c
 
 def autocorr_fft(x):
-    """FFT-based autocorrelation: approximately O(n log n)."""
     n = x.size
 
     # Zero-padding avoids circular correlation.
@@ -37,7 +34,6 @@ def autocorr_fft(x):
     return c / norm
 
 def best_time(func, *args, repeat=3):
-    """Return best runtime and last computed output."""
     best = np.inf
     output = None
 

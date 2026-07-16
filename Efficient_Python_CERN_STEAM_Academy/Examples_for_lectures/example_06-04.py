@@ -1,20 +1,12 @@
 import numpy as np
 
 def initial_condition(n):
-    """A simple localized initial condition for a diffusion-like example."""
     x = np.linspace(-6.0, 6.0, n)
     dx = x[1] - x[0]
     u = np.exp(-x**2)
     return x, u, dx
 
 def diffusion_step_in_place(u, dx, dt, work):
-    """
-    Explicit diffusion step.
-
-    The update is performed safely using a work array:
-    first compute the new state into 'work',
-    then copy it back into 'u'.
-    """
     work[0] = u[0]
     work[-1] = u[-1]
 
@@ -27,10 +19,6 @@ def diffusion_step_in_place(u, dx, dt, work):
     return u
 
 def run_with_bad_snapshots(n=1001, n_steps=200, save_every=40):
-    """
-    Buggy version: snapshots store references to the same mutable array.
-    All saved snapshots will point to the same data buffer.
-    """
     x, u, dx = initial_condition(n)
     dt = 0.2*dx**2
     work = np.empty_like(u)
@@ -49,10 +37,6 @@ def run_with_bad_snapshots(n=1001, n_steps=200, save_every=40):
     return x, snapshots
 
 def run_with_good_snapshots(n=1001, n_steps=200, save_every=40):
-    """
-    Correct version: each saved snapshot is an independent copy.
-    This costs memory, but preserves the history.
-    """
     x, u, dx = initial_condition(n)
     dt = 0.2*dx**2
     work = np.empty_like(u)

@@ -1,7 +1,9 @@
 from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+
 
 project_root = Path("lecture05_pipeline_demo")
 
@@ -13,8 +15,9 @@ table_dir.mkdir(parents=True, exist_ok=True)
 figure_dir.mkdir(parents=True, exist_ok=True)
 
 
-
-# Load the clean table
+# ------------------------------------------------------------
+# 1. Load the clean table
+# ------------------------------------------------------------
 clean = pd.read_csv(
     processed_dir / "clean_events.csv",
     dtype={
@@ -31,7 +34,10 @@ clean["energy_bin"] = pd.Categorical(
     ordered=True,
 )
 
-# Group by detector and energy bin
+
+# ------------------------------------------------------------
+# 2. Group by detector and energy bin
+# ------------------------------------------------------------
 summary = (
     clean.groupby(["detector", "energy_bin"],
                   as_index=False,
@@ -52,7 +58,10 @@ summary.to_csv(summary_path, index=False)
 print(f"Saved summary table to: {summary_path}")
 print(summary)
 
-# Pivot table for quick inspection
+
+# ------------------------------------------------------------
+# 3. Pivot table for quick inspection
+# ------------------------------------------------------------
 pivot = summary.pivot_table(
     index="energy_bin",
     columns="detector",
@@ -63,8 +72,11 @@ pivot = summary.pivot_table(
 print("\nMean signal rate as labelled grid:")
 print(pivot)
 
-# Plot labelled summary
-fig, ax = plt.subplots(figsize=(4))
+
+# ------------------------------------------------------------
+# 4. Plot labelled summary
+# ------------------------------------------------------------
+fig, ax = plt.subplots(figsize=(7, 4))
 
 x_positions = {label: i for i, label in enumerate(energy_order)}
 

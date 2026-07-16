@@ -3,22 +3,15 @@ from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 from time import perf_counter
 
 def sum_numpy_chunk(chunk):
-    """NumPy-heavy operation on one chunk.
-
-    The mathematical result is almost equal to len(chunk), because
-    sin(x)^2 + cos(x)^2 = 1, but the computation still does real work.
-    """
     y = np.sin(chunk)**2 + np.cos(chunk)**2
     return float(np.sum(y))
 
 def run_serial(chunks):
-    """Serial reference."""
     t0 = perf_counter()
     total = sum(sum_numpy_chunk(chunk) for chunk in chunks)
     return perf_counter() - t0, total
 
 def run_pool(executor_class, chunks, max_workers):
-    """Run the same chunked computation using an executor."""
     t0 = perf_counter()
 
     with executor_class(max_workers=max_workers) as executor:
@@ -29,7 +22,7 @@ def run_pool(executor_class, chunks, max_workers):
 
 if __name__ == "__main__":
     n_workers = 4
-    n = 6_000_000
+    n = 60_000_000
 
     x = np.linspace(0.0, 100.0, n)
     chunks = np.array_split(x, n_workers)

@@ -11,12 +11,11 @@ from time import perf_counter
 try:
     from joblib import Parallel, delayed
 except ImportError as exc:
-    raise SystemExit("This example requires joblib. Install it with: pip install joblib") from exc
+    raise SystemExit("This example requires joblib.") from exc
 
 def run_one(alpha):
-    """One independent simulation for a given parameter alpha."""
     nx = 12_000
-    nsteps = 400
+    nsteps = 10000
 
     x = np.linspace(-30.0, 30.0, nx)
     dx = x[1] - x[0]
@@ -43,7 +42,6 @@ def run_one(alpha):
     return alpha, energy
 
 def run_sweep(params, n_jobs):
-    """Run the full parameter sweep and measure wall-clock time."""
     t0 = perf_counter()
 
     results = Parallel(n_jobs=n_jobs)(
@@ -58,7 +56,7 @@ if __name__ == "__main__":
     timings = {}
     reference = None
 
-    for n_jobs in [1, 2, 4]:
+    for n_jobs in [1, 2, 4, 8]:
         dt, results = run_sweep(params, n_jobs=n_jobs)
         timings[n_jobs] = dt
 

@@ -2,15 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def initial_condition(x):
-    """Initial localized field."""
     return np.exp(-(x + 1.5)**2) + 0.6*np.exp(-4.0*(x - 1.0)**2)
 
 def heat_step_in_place(u, *, D, dt, dx):
-    """
-    One explicit heat-equation step.
-
-    The function intentionally modifies u in place.
-    """
     r = D * dt / dx**2
 
     if r > 0.5:
@@ -27,9 +21,6 @@ def heat_step_in_place(u, *, D, dt, dx):
     u[-1] = u[-2]
 
 def solve_bad(u0, *, D, dt, dx, nsteps, save_every):
-    """
-    Bad version: all saved snapshots refer to the same mutable array.
-    """
     u = u0.copy()
     snapshots = []
 
@@ -43,9 +34,6 @@ def solve_bad(u0, *, D, dt, dx, nsteps, save_every):
     return snapshots
 
 def solve_good(u0, *, D, dt, dx, nsteps, save_every):
-    """
-    Good version: each saved snapshot is an independent array.
-    """
     u = u0.copy()
     snapshots = []
 

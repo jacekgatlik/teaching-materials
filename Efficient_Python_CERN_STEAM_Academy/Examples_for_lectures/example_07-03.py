@@ -7,14 +7,12 @@ except ImportError as exc:
     raise SystemExit("This example requires Numba. Install it with: pip install numba") from exc
 
 def make_field(n):
-    """Construct a slightly perturbed kink-like profile."""
     x = np.linspace(-10.0, 10.0, n)
     dx = x[1] - x[0]
     u = np.tanh(x) + 0.05*np.sin(7.0*x)
     return x, u, dx
 
 def residual_python(u, dx, out):
-    """Baseline Python loop."""
     inv_dx2 = 1.0 / dx**2
 
     out[0] = 0.0
@@ -25,7 +23,6 @@ def residual_python(u, dx, out):
         out[i] = -u_xx + u[i]*(u[i]**2 - 1.0)
 
 def residual_numpy(u, dx, out):
-    """Vectorized NumPy version."""
     inv_dx2 = 1.0 / dx**2
 
     out[0] = 0.0
@@ -38,7 +35,6 @@ def residual_numpy(u, dx, out):
 
 @njit
 def residual_numba(u, dx, out):
-    """Compiled scalar loop."""
     inv_dx2 = 1.0 / dx**2
 
     out[0] = 0.0
@@ -50,10 +46,6 @@ def residual_numba(u, dx, out):
 
 @njit(parallel=True)
 def residual_numba_parallel(u, dx, out):
-    """Compiled parallel loop.
-
-    This is safe because every iteration writes to a different out[i].
-    """
     inv_dx2 = 1.0 / dx**2
 
     out[0] = 0.0
@@ -64,7 +56,6 @@ def residual_numba_parallel(u, dx, out):
         out[i] = -u_xx + u[i]*(u[i]**2 - 1.0)
 
 def best_time(func, repeat, *args):
-    """Measure best runtime over several repetitions."""
     best = np.inf
 
     for _ in range(repeat):
@@ -76,7 +67,7 @@ def best_time(func, repeat, *args):
     return best
 
 # Problem setup
-n = 300_000
+n = 3_000_000
 x, u, dx = make_field(n)
 
 out_py = np.empty_like(u)

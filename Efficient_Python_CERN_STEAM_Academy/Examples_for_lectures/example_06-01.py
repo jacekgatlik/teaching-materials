@@ -2,14 +2,12 @@ import timeit
 import numpy as np
 
 def make_problem(n):
-    """Create a simple 1D field on a uniform grid."""
     x = np.linspace(-10.0, 10.0, n)
     dx = x[1] - x[0]
     u = np.tanh(x)
     return u, dx
 
 def residual_loop(u, dx):
-    """Clear baseline: finite-difference residual using a Python loop."""
     r = np.zeros_like(u)
 
     for i in range(1, u.size - 1):
@@ -19,7 +17,6 @@ def residual_loop(u, dx):
     return r
 
 def residual_vectorized(u, dx):
-    """Candidate implementation: the same residual using NumPy slicing."""
     r = np.zeros_like(u)
 
     r[1:-1] = (
@@ -30,7 +27,6 @@ def residual_vectorized(u, dx):
     return r
 
 def best_and_median_time(function, u, dx, number=20, repeat=5):
-    """Return best and median time per function call."""
     samples = timeit.repeat(
         lambda: function(u, dx),
         number=number,

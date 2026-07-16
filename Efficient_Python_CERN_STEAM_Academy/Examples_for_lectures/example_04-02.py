@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 
 def validate_oscillator_params(params):
-    """Check the minimum assumptions needed by the model."""
     required = {"gamma", "omega0", "beta", "drive", "omega_drive"}
     missing = required - set(params)
 
@@ -17,11 +16,6 @@ def validate_oscillator_params(params):
         raise ValueError("omega0 must be positive")
 
 def oscillator_rhs(t, y, params):
-    """
-    Right-hand side of a driven damped Duffing oscillator.
-
-        x'' + gamma*x' + omega0^2*x + beta*x^3 = drive*cos(omega_drive*t)
-    """
     x, v = y
 
     gamma = params["gamma"]
@@ -38,12 +32,6 @@ def oscillator_rhs(t, y, params):
     return np.array([dxdt, dvdt])
 
 def oscillator_energy(y, params):
-    """
-    Mechanical energy without the external drive contribution.
-
-    For a damped/driven system this is not conserved, but it is still
-    a useful diagnostic.
-    """
     x = y[0]
     v = y[1]
 
@@ -56,9 +44,6 @@ def oscillator_energy(y, params):
     return kinetic + potential
 
 def run_oscillator(params, y0, *, t_span, n_eval=3000):
-    """
-    Solve the oscillator and return arrays plus diagnostics.
-    """
     validate_oscillator_params(params)
 
     y0 = np.asarray(y0, dtype=float)

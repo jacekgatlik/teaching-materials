@@ -2,19 +2,16 @@ import numpy as np
 from time import perf_counter
 
 def snapshot(x, t):
-    """A moving oscillatory wave packet."""
     envelope = np.exp(-0.15 * (x - 0.3*t)**2)
     carrier = np.cos(6.0*x - 1.5*t)
     return envelope * carrier
 
 def energy_of_snapshot(u, dx):
-    """Simple quadratic diagnostic for one field snapshot."""
     ux = np.gradient(u, dx)
     density = 0.5*ux**2 + 0.5*u**2
     return np.sum(density) * dx
 
 def store_then_analyze(x, t_values):
-    """Store all snapshots first, then compute diagnostics."""
     dx = x[1] - x[0]
 
     snapshots = np.empty((t_values.size, x.size))
@@ -30,7 +27,6 @@ def store_then_analyze(x, t_values):
     return energies.mean(), snapshots.nbytes
 
 def stream_analyze(x, t_values):
-    """Compute diagnostics without storing the full time history."""
     dx = x[1] - x[0]
     total_energy = 0.0
 
@@ -42,7 +38,7 @@ def stream_analyze(x, t_values):
 
 
 # Problem setup 
-nx = 40_000
+nx = 400_000
 nt = 150
 
 x = np.linspace(-40.0, 40.0, nx)
